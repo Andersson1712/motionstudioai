@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Btn, Choice, Field, inputCls } from "@/components/ui-kit";
 import { useStudio } from "@/lib/store";
+import { generateScript } from "@/lib/scripts.functions";
 import { buildTimeline, draftScriptFromIdea } from "@/lib/timeline";
 import type { ProjectMode, VisualDensity } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -42,6 +43,26 @@ function NewProject() {
   const [density, setDensity] = useState<VisualDensity>("moderate");
   const [sfx, setSfx] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [drafting, setDrafting] = useState(false);
+  const [draftError, setDraftError] = useState<string | null>(null);
+  const userId = useStudio((s) => s.userId);
+
+  const redactar = async () => {
+    setDrafting(true);
+    setDraftError(null);
+    try {
+      const { script: aiScript } = await generateScript({ data: { idea: idea.trim(), mode } });
+      setScript(aiScript);
+    } catch {
+      setDraftError(
+        userId
+          ? "No se pudo generar el guion con IA. Inténtalo de nuevo."
+          : "Inicia sesión para generar el guion con IA.",
+      );
+    } finally {
+      setDrafting(false);
+    }
+  };
 
   const canNext = step === 0 || (step === 1 && (mode === "talking_head" ? !!file || script.trim() : script.trim() || idea.trim()));
 
