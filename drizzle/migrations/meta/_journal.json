@@ -15,6 +15,13 @@
       "when": 1791618938481,
       "tag": "0001_voiceovers_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791618948905,
+      "tag": "0002_voiceovers_select",
+      "breakpoints": true
     }
   ]
 }
