@@ -5,7 +5,8 @@ import { AppShell } from "@/components/AppShell";
 import { Btn, Choice, Field, inputCls } from "@/components/ui-kit";
 import { useStudio } from "@/lib/store";
 import { generateScript } from "@/lib/scripts.functions";
-import { buildTimeline, draftScriptFromIdea } from "@/lib/timeline";
+import { buildTimeline, draftScriptFromIdea, type Voiceover } from "@/lib/timeline";
+import { generateVoiceover } from "@/lib/voice.functions";
 import type { ProjectMode, VisualDensity } from "@/lib/types";
 import { cn } from "@/lib/utils";
 

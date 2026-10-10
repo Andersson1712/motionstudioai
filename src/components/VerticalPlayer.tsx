@@ -24,13 +24,13 @@ export function VerticalPlayer({
   const [playing, setPlaying] = useState(false);
   const raf = useRef<number>(0);
   const last = useRef<number>(0);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const voUrl = timeline.audioTrack.voiceoverUrl;
 
   useEffect(() => {
     if (seekTo != null) setFrame(seekTo);
   }, [seekTo]);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const voUrl = timeline.audioTrack.voiceoverUrl;
 
   useEffect(() => {
     const a = audioRef.current;
@@ -110,13 +110,14 @@ export function VerticalPlayer({
         )}
       </div>
 
+      {voUrl && <audio ref={audioRef} src={voUrl} preload="auto" />}
       <div className="w-[340px] max-w-full space-y-2">
         <input
           type="range"
           min={0}
           max={total - 1}
           value={frame}
-          onChange={(e) => setFrame(Number(e.target.value))}
+          onChange={(e) => seek(Number(e.target.value))}
           className="w-full accent-[var(--color-primary)]"
           aria-label="Línea de tiempo"
         />

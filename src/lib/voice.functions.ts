@@ -38,9 +38,9 @@ export const generateVoiceover = createServerFn({ method: "POST" })
   }))
   .handler(async ({ data, context }) => {
     if (!data.script) throw new Error("Guion vacío");
-    const key = process.env.ELEVENLABS_API_KEY;
+    const key = process.env['ELEVENLABS_API_KEY'];
     if (!key) throw new Error("ElevenLabs no está conectado");
-    const voice = VOICE_MAP[data.voiceId] ?? VOICE_MAP.elevenlabs_default!;
+    const voice = VOICE_MAP[data.voiceId] ?? VOICE_MAP['elevenlabs_default']!;
 
     const res = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voice}/with-timestamps?output_format=mp3_44100_128`,
