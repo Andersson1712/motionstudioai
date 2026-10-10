@@ -1,32 +1,53 @@
-import type { BrandKit, Scene, TimelineData, VisualDensity } from "./types";
+import type { AlignedWord, BrandKit, Scene, TimelineData, VisualDensity } from "./types";
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 
 const FPS = 30;
 
-/** Splits a script into sentences and builds a timeline matching the JSON contract. */
-export function buildTimeline(script: string, kit: BrandKit, density: VisualDensity, sfx: boolean): TimelineData {
-  const sentences = script
+export type Voiceover = { audioUrl: string; words: AlignedWord[] };
+
+/** Splits a script into sentences and builds a timeline matching the JSON contract.
+ *  With a voiceover, captions and scene timing follow the real word-by-word alignment. */
+export function buildTimeline(
+  script: string,
+  kit: BrandKit,
+  density: VisualDensity,
+  sfx: boolean,
+  voiceover?: Voiceover,
+): TimelineData {
+  const allSentences = script
     .split(/(?<=[.!?])\s+|\n+/)
     .map((s) => s.trim())
-    .filter(Boolean)
-    .slice(0, 8);
+    .filter(Boolean);
+  const sentences = voiceover ? allSentences : allSentences.slice(0, 8);
   const layouts = ["HookTitle", "StatCard", "Mockup", "BulletList", "QuoteCard"];
   const overlayCount = density === "minimal" ? 0 : density === "moderate" ? 1 : 2;
+  const aw = voiceover?.words ?? [];
+  const toF = (s: number) => Math.round(s * FPS);
+  let wIdx = 0;
 
   let cursor = 0;
   const captions: TimelineData["captions"] = [];
   const scenes: Scene[] = sentences.map((text, i) => {
     const words = text.split(/\s+/);
     const framesPerWord = density === "intense" ? 9 : 11;
-    const duration = Math.max(60, words.length * framesPerWord + 15);
-    words.forEach((w, wi) => {
-      captions.push({
-        word: w,
-        startFrame: cursor + wi * framesPerWord,
-        endFrame: cursor + (wi + 1) * framesPerWord,
+    let duration = Math.max(60, words.length * framesPerWord + 15);
+    if (aw.length) {
+      const chunk = aw.slice(wIdx, wIdx + words.length);
+      wIdx += words.length;
+      chunk.forEach((w) => captions.push({ word: w.word, startFrame: toF(w.start), endFrame: Math.max(toF(w.end), toF(w.start) + 1) }));
+      const next = aw[wIdx];
+      const end = next ? toF(next.start) : toF(chunk.at(-1)?.end ?? 0) + 15;
+      duration = Math.max(1, end - cursor);
+    } else {
+      words.forEach((w, wi) => {
+        captions.push({
+          word: w,
+          startFrame: cursor + wi * framesPerWord,
+          endFrame: cursor + (wi + 1) * framesPerWord,
+        });
       });
-    });
+    }
     const layout: string = i === 0 ? "HookTitle" : layouts[i % layouts.length]!;
     const layoutProps: Record<string, any> =
       layout === "StatCard"
