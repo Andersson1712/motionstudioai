@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProjectsNewRouteImport } from './routes/projects.new'
 import { Route as SettingsBrandKitRouteImport } from './routes/settings.brand-kit'
 import { Route as ProjectsIdEditorRouteImport } from './routes/projects.$id.editor'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsNewRoute = ProjectsNewRouteImport.update({
@@ -44,6 +50,7 @@ const ProjectsIdEditorRoute = ProjectsIdEditorRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
   '/projects/$id/editor': typeof ProjectsIdEditorRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
   '/projects/$id/editor': typeof ProjectsIdEditorRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
   '/projects/$id/editor': typeof ProjectsIdEditorRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/login'
     | '/projects/new'
     | '/settings/brand-kit'
     | '/projects/$id/editor'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
+    | '/login'
     | '/projects/new'
     | '/settings/brand-kit'
     | '/projects/$id/editor'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/login'
     | '/projects/new'
     | '/settings/brand-kit'
     | '/projects/$id/editor'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  LoginRoute: typeof LoginRoute
   ProjectsNewRoute: typeof ProjectsNewRoute
   SettingsBrandKitRoute: typeof SettingsBrandKitRoute
   ProjectsIdEditorRoute: typeof ProjectsIdEditorRoute
@@ -109,6 +122,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects/new': {
@@ -138,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  LoginRoute: LoginRoute,
   ProjectsNewRoute: ProjectsNewRoute,
   SettingsBrandKitRoute: SettingsBrandKitRoute,
   ProjectsIdEditorRoute: ProjectsIdEditorRoute,
