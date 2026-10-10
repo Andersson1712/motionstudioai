@@ -70,3 +70,6 @@ export interface VideoProject {
   export_url: string | null;
   created_at: string;
 }
+
+/** Palabra alineada con el audio (segundos). Se convierte a frames en el timeline. */
+export type AlignedWord = { word: string; start: number; end: number };
