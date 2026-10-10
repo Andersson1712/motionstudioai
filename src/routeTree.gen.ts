@@ -10,33 +10,89 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ProjectsNewRouteImport } from './routes/projects.new'
+import { Route as SettingsBrandKitRouteImport } from './routes/settings.brand-kit'
+import { Route as ProjectsIdEditorRouteImport } from './routes/projects.$id.editor'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsNewRoute = ProjectsNewRouteImport.update({
+  id: '/projects/new',
+  path: '/projects/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsBrandKitRoute = SettingsBrandKitRouteImport.update({
+  id: '/settings/brand-kit',
+  path: '/settings/brand-kit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsIdEditorRoute = ProjectsIdEditorRouteImport.update({
+  id: '/projects/$id/editor',
+  path: '/projects/$id/editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/projects/new': typeof ProjectsNewRoute
+  '/settings/brand-kit': typeof SettingsBrandKitRoute
+  '/projects/$id/editor': typeof ProjectsIdEditorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/projects/new': typeof ProjectsNewRoute
+  '/settings/brand-kit': typeof SettingsBrandKitRoute
+  '/projects/$id/editor': typeof ProjectsIdEditorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/projects/new': typeof ProjectsNewRoute
+  '/settings/brand-kit': typeof SettingsBrandKitRoute
+  '/projects/$id/editor': typeof ProjectsIdEditorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/projects/new'
+    | '/settings/brand-kit'
+    | '/projects/$id/editor'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/projects/new'
+    | '/settings/brand-kit'
+    | '/projects/$id/editor'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/projects/new'
+    | '/settings/brand-kit'
+    | '/projects/$id/editor'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
+  ProjectsNewRoute: typeof ProjectsNewRoute
+  SettingsBrandKitRoute: typeof SettingsBrandKitRoute
+  ProjectsIdEditorRoute: typeof ProjectsIdEditorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +104,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/new': {
+      id: '/projects/new'
+      path: '/projects/new'
+      fullPath: '/projects/new'
+      preLoaderRoute: typeof ProjectsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings/brand-kit': {
+      id: '/settings/brand-kit'
+      path: '/settings/brand-kit'
+      fullPath: '/settings/brand-kit'
+      preLoaderRoute: typeof SettingsBrandKitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$id/editor': {
+      id: '/projects/$id/editor'
+      path: '/projects/$id/editor'
+      fullPath: '/projects/$id/editor'
+      preLoaderRoute: typeof ProjectsIdEditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
+  ProjectsNewRoute: ProjectsNewRoute,
+  SettingsBrandKitRoute: SettingsBrandKitRoute,
+  ProjectsIdEditorRoute: ProjectsIdEditorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
