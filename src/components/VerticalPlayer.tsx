@@ -58,7 +58,7 @@ export function VerticalPlayer({
   const fmt = (f: number) => (f / timeline.fps).toFixed(1) + "s";
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex w-full flex-col items-center gap-4">
       <div
         className="relative aspect-[9/16] w-full max-w-[340px] overflow-hidden rounded-[28px] border-4 border-secondary shadow-2xl"
         style={{ background: theme.backgroundColor, fontFamily: theme.fontFamily }}
