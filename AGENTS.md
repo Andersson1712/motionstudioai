@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- App data (brand kit, projects, timeline JSON) lives in a persisted Zustand store (src/lib/store.ts) until Lovable Cloud is enabled; app routes use `ssr: false` because the store reads localStorage.
+- The video preview is a CSS simulation (src/components/VerticalPlayer.tsx) that reads the timeline JSON contract in src/lib/types.ts; keep any future Remotion player on that same contract.
