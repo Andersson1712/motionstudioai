@@ -29,14 +29,34 @@ export function VerticalPlayer({
     if (seekTo != null) setFrame(seekTo);
   }, [seekTo]);
 
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const voUrl = timeline.audioTrack.voiceoverUrl;
+
+  useEffect(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    if (playing) void a.play().catch(() => {});
+    else a.pause();
+  }, [playing, voUrl]);
+
   useEffect(() => {
     if (!playing) return;
     const tick = (t: number) => {
-      if (!last.current) last.current = t;
-      const dt = t - last.current;
-      if (dt >= 1000 / timeline.fps) {
-        last.current = t;
-        setFrame((f) => (f + 1 >= total ? 0 : f + 1));
+      const a = audioRef.current;
+      if (a && voUrl) {
+        // El audio del locutor marca el reloj, como en Remotion.
+        const f = Math.floor(a.currentTime * timeline.fps);
+        if (a.ended || f >= total) {
+          a.currentTime = 0;
+          setFrame(0);
+        } else setFrame(f);
+      } else {
+        if (!last.current) last.current = t;
+        const dt = t - last.current;
+        if (dt >= 1000 / timeline.fps) {
+          last.current = t;
+          setFrame((f) => (f + 1 >= total ? 0 : f + 1));
+        }
       }
       raf.current = requestAnimationFrame(tick);
     };
@@ -45,7 +65,12 @@ export function VerticalPlayer({
       cancelAnimationFrame(raf.current);
       last.current = 0;
     };
-  }, [playing, total, timeline.fps]);
+  }, [playing, total, timeline.fps, voUrl]);
+
+  const seek = (f: number) => {
+    setFrame(f);
+    if (audioRef.current) audioRef.current.currentTime = f / timeline.fps;
+  };
 
   useEffect(() => onFrame?.(frame), [frame, onFrame]);
 
