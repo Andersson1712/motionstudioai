@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Btn, Choice, Field, inputCls } from "@/components/ui-kit";
 import { useStudio } from "@/lib/store";
+import { generateScript } from "@/lib/scripts.functions";
 import { buildTimeline, draftScriptFromIdea } from "@/lib/timeline";
 import type { ProjectMode, VisualDensity } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -42,6 +43,26 @@ function NewProject() {
   const [density, setDensity] = useState<VisualDensity>("moderate");
   const [sfx, setSfx] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [drafting, setDrafting] = useState(false);
+  const [draftError, setDraftError] = useState<string | null>(null);
+  const userId = useStudio((s) => s.userId);
+
+  const redactar = async () => {
+    setDrafting(true);
+    setDraftError(null);
+    try {
+      const { script: aiScript } = await generateScript({ data: { idea: idea.trim(), mode } });
+      setScript(aiScript);
+    } catch {
+      setDraftError(
+        userId
+          ? "No se pudo generar el guion con IA. Inténtalo de nuevo."
+          : "Inicia sesión para generar el guion con IA.",
+      );
+    } finally {
+      setDrafting(false);
+    }
+  };
 
   const canNext = step === 0 || (step === 1 && (mode === "talking_head" ? !!file || script.trim() : script.trim() || idea.trim()));
 
@@ -118,10 +139,12 @@ function NewProject() {
                 <Field label="Idea" hint="La IA la convertirá en un guion de 20-40 segundos.">
                   <div className="flex gap-2">
                     <input className={inputCls} value={idea} onChange={(e) => setIdea(e.target.value)} placeholder="Ej. Por qué el café frío es tendencia" />
-                    <Btn variant="outline" type="button" disabled={!idea.trim()} onClick={() => setScript(draftScriptFromIdea(idea))}>
-                      <Sparkles className="size-4" /> Redactar
+                    <Btn variant="outline" type="button" disabled={!idea.trim() || drafting} onClick={redactar}>
+                      {drafting ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
+                      {drafting ? "Redactando…" : "Redactar"}
                     </Btn>
                   </div>
+                  {draftError && <p className="mt-2 text-sm text-destructive">{draftError}</p>}
                 </Field>
               )}
               <Field label="Guion (opcional)">
