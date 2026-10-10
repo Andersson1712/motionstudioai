@@ -26,7 +26,10 @@ function Landing() {
           <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground"><Clapperboard className="size-4" /></span>
           <span className="font-display text-lg font-bold">MotionStudio AI</span>
         </div>
-        <Link to="/dashboard" className="text-sm font-semibold text-muted-foreground hover:text-foreground">Abrir estudio →</Link>
+        <div className="flex items-center gap-4">
+          <Link to="/login" className="text-sm font-semibold text-muted-foreground hover:text-foreground">Acceder</Link>
+          <Link to="/dashboard" className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:-translate-y-0.5 hover:shadow-glow">Abrir estudio →</Link>
+        </div>
       </nav>
       <section className="flex flex-1 flex-col items-center justify-center py-20 text-center">
         <span className="animate-slide-up mb-6 rounded-full border border-border bg-surface px-3 py-1 text-xs font-semibold text-primary">9:16 · TikTok · Reels · Shorts</span>
