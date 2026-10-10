@@ -5,7 +5,8 @@ import { AppShell } from "@/components/AppShell";
 import { Btn, Choice, Field, inputCls } from "@/components/ui-kit";
 import { useStudio } from "@/lib/store";
 import { generateScript } from "@/lib/scripts.functions";
-import { buildTimeline, draftScriptFromIdea } from "@/lib/timeline";
+import { buildTimeline, draftScriptFromIdea, type Voiceover } from "@/lib/timeline";
+import { generateVoiceover } from "@/lib/voice.functions";
 import type { ProjectMode, VisualDensity } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -68,8 +69,16 @@ function NewProject() {
 
   const generate = async () => {
     setBusy(true);
-    await new Promise((r) => setTimeout(r, 1200));
+    setDraftError(null);
     const finalScript = script.trim() || draftScriptFromIdea(idea);
+    let voiceover: Voiceover | undefined;
+    if (mode === "full_animated" && userId) {
+      try {
+        voiceover = await generateVoiceover({ data: { script: finalScript, voiceId: voice } });
+      } catch {
+        setDraftError("No se pudo generar la voz del locutor. Se creará el video sin audio.");
+      }
+    }
     const id = crypto.randomUUID();
     addProject({
       id,
@@ -79,11 +88,11 @@ function NewProject() {
       status: "timeline_ready",
       raw_video_url: file ? URL.createObjectURL(file) : null,
       script_text: finalScript,
-      audio_url: null,
+      audio_url: voiceover?.audioUrl ?? null,
       voice_id: voice,
       visual_density: density,
       sfx_enabled: sfx,
-      timeline_data: buildTimeline(finalScript, brandKit, density, sfx),
+      timeline_data: buildTimeline(finalScript, brandKit, density, sfx, voiceover),
       export_url: null,
       created_at: new Date().toISOString(),
     });
