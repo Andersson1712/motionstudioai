@@ -139,10 +139,12 @@ function NewProject() {
                 <Field label="Idea" hint="La IA la convertirá en un guion de 20-40 segundos.">
                   <div className="flex gap-2">
                     <input className={inputCls} value={idea} onChange={(e) => setIdea(e.target.value)} placeholder="Ej. Por qué el café frío es tendencia" />
-                    <Btn variant="outline" type="button" disabled={!idea.trim()} onClick={() => setScript(draftScriptFromIdea(idea))}>
-                      <Sparkles className="size-4" /> Redactar
+                    <Btn variant="outline" type="button" disabled={!idea.trim() || drafting} onClick={redactar}>
+                      {drafting ? <Loader2 className="size-4 animate-spin" /> : <Sparkles className="size-4" />}
+                      {drafting ? "Redactando…" : "Redactar"}
                     </Btn>
                   </div>
+                  {draftError && <p className="mt-2 text-sm text-destructive">{draftError}</p>}
                 </Field>
               )}
               <Field label="Guion (opcional)">
