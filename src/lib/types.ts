@@ -23,11 +23,15 @@ export interface BrandKit {
   safe_zone: SafeZone;
 }
 
+/** Contract allows arbitrary props; known keys are listed for typed access. */
+export type Props = Record<string, any> &
+  Partial<Record<"title" | "value" | "label" | "headline" | "imageUrl" | "items" | "emoji", any>>;
+
 export interface Overlay {
   component: string;
   fromFrame: number;
   durationInFrames: number;
-  props: Record<string, any>;
+  props: Props;
   sfx: string;
 }
 
@@ -36,7 +40,7 @@ export interface Scene {
   fromFrame: number;
   durationInFrames: number;
   layout: string;
-  layoutProps: Record<string, any>;
+  layoutProps: Props;
   overlays: Overlay[];
 }
 

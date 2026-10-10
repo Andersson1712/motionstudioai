@@ -27,7 +27,7 @@ export function buildTimeline(script: string, kit: BrandKit, density: VisualDens
         endFrame: cursor + (wi + 1) * framesPerWord,
       });
     });
-    const layout = i === 0 ? "HookTitle" : layouts[i % layouts.length];
+    const layout: string = i === 0 ? "HookTitle" : layouts[i % layouts.length]!;
     const layoutProps: Record<string, any> =
       layout === "StatCard"
         ? { value: `${(i * 17 + 23) % 97}%`, label: words.slice(0, 5).join(" ") }

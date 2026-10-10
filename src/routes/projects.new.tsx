@@ -38,7 +38,7 @@ function NewProject() {
   const [file, setFile] = useState<File | null>(null);
   const [idea, setIdea] = useState("");
   const [script, setScript] = useState("");
-  const [voice, setVoice] = useState(voices[0].id);
+  const [voice, setVoice] = useState(voices[0]!.id);
   const [density, setDensity] = useState<VisualDensity>("moderate");
   const [sfx, setSfx] = useState(true);
   const [busy, setBusy] = useState(false);
