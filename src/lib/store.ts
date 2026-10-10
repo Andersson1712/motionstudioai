@@ -78,7 +78,7 @@ async function fetchCloud(userId: string): Promise<{ kit: BrandKit; projects: Vi
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
 
-  return { kit, projects: (rows as VideoProject[] | null) ?? [] };
+  return { kit, projects: (rows as unknown as VideoProject[] | null) ?? [] };
 }
 
 export const useStudio = create<State>()(
