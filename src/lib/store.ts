@@ -1,7 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { BrandKit, TimelineData, VideoProject } from "./types";
+import type { Json } from "@/integrations/supabase/types";
 import { buildTimeline } from "./timeline";
+
+const asJson = (t: TimelineData | null): Json => t as unknown as Json;
 import { supabase } from "@/integrations/supabase/client";
 
 const defaultKit: BrandKit = {
