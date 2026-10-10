@@ -14,7 +14,128 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      brand_kits: {
+        Row: {
+          accent_color: string
+          background_color: string
+          caption_style: string
+          created_at: string
+          font_family: string
+          id: string
+          logo_url: string | null
+          name: string
+          primary_color: string
+          safe_zone: string
+          user_id: string
+        }
+        Insert: {
+          accent_color?: string
+          background_color?: string
+          caption_style?: string
+          created_at?: string
+          font_family?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          primary_color?: string
+          safe_zone?: string
+          user_id: string
+        }
+        Update: {
+          accent_color?: string
+          background_color?: string
+          caption_style?: string
+          created_at?: string
+          font_family?: string
+          id?: string
+          logo_url?: string | null
+          name?: string
+          primary_color?: string
+          safe_zone?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          audio_url: string | null
+          brand_kit_id: string | null
+          created_at: string
+          export_url: string | null
+          id: string
+          mode: string
+          raw_video_url: string | null
+          script_text: string | null
+          sfx_enabled: boolean
+          status: string
+          timeline_data: Json | null
+          title: string
+          user_id: string
+          visual_density: string
+          voice_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          brand_kit_id?: string | null
+          created_at?: string
+          export_url?: string | null
+          id?: string
+          mode?: string
+          raw_video_url?: string | null
+          script_text?: string | null
+          sfx_enabled?: boolean
+          status?: string
+          timeline_data?: Json | null
+          title: string
+          user_id: string
+          visual_density?: string
+          voice_id?: string
+        }
+        Update: {
+          audio_url?: string | null
+          brand_kit_id?: string | null
+          created_at?: string
+          export_url?: string | null
+          id?: string
+          mode?: string
+          raw_video_url?: string | null
+          script_text?: string | null
+          sfx_enabled?: boolean
+          status?: string
+          timeline_data?: Json | null
+          title?: string
+          user_id?: string
+          visual_density?: string
+          voice_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "projects_brand_kit_id_fkey"
+            columns: ["brand_kit_id"]
+            isOneToOne: false
+            referencedRelation: "brand_kits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
