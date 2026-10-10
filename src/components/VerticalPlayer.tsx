@@ -60,7 +60,7 @@ export function VerticalPlayer({
   return (
     <div className="flex w-full flex-col items-center gap-4">
       <div
-        className="relative aspect-[9/16] w-full max-w-[340px] overflow-hidden rounded-[28px] border-4 border-secondary shadow-2xl"
+        className="relative aspect-[9/16] w-[340px] max-w-full overflow-hidden rounded-[28px] border-4 border-secondary shadow-2xl"
         style={{ background: theme.backgroundColor, fontFamily: theme.fontFamily }}
       >
         {scene && <SceneView key={scene.id} scene={scene} frame={frame} theme={theme} />}
@@ -85,7 +85,7 @@ export function VerticalPlayer({
         )}
       </div>
 
-      <div className="w-full max-w-[340px] space-y-2">
+      <div className="w-[340px] max-w-full space-y-2">
         <input
           type="range"
           min={0}
