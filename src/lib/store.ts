@@ -118,6 +118,7 @@ export const useStudio = create<State>()(
         if (userId) {
           void supabase.from("projects").insert({
             ...p,
+            timeline_data: asJson(p.timeline_data),
             user_id: userId,
             brand_kit_id: brandKit.id !== defaultKit.id ? brandKit.id : null,
           });
@@ -127,14 +128,21 @@ export const useStudio = create<State>()(
       updateProject: (id, p) => {
         set((s) => ({ projects: s.projects.map((x) => (x.id === id ? { ...x, ...p } : x)) }));
         const { userId } = get();
-        if (userId) void supabase.from("projects").update(p).eq("id", id).eq("user_id", userId);
+        if (userId) {
+          const { timeline_data, ...rest } = p;
+          void supabase
+            .from("projects")
+            .update({ ...rest, ...(timeline_data !== undefined ? { timeline_data: asJson(timeline_data) } : {}) })
+            .eq("id", id)
+            .eq("user_id", userId);
+        }
       },
 
       updateTimeline: (id, t) => {
         set((s) => ({ projects: s.projects.map((x) => (x.id === id ? { ...x, timeline_data: t } : x)) }));
         const { userId } = get();
         if (userId)
-          void supabase.from("projects").update({ timeline_data: t }).eq("id", id).eq("user_id", userId);
+          void supabase.from("projects").update({ timeline_data: asJson(t) }).eq("id", id).eq("user_id", userId);
       },
 
       deleteProject: (id) => {
