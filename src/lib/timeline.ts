@@ -85,7 +85,7 @@ export function buildTimeline(
       backgroundColor: kit.background_color,
       fontFamily: kit.font_family,
     },
-    audioTrack: { voiceoverUrl: "", bgmUrl: "", bgmVolume: 0.2 },
+    audioTrack: { voiceoverUrl: voiceover?.audioUrl ?? "", bgmUrl: "", bgmVolume: 0.2 },
     scenes,
     captions,
   };
