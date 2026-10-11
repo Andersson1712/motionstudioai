@@ -1,11 +1,12 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Clapperboard, LayoutGrid, LogOut, Palette, Plus } from "lucide-react";
+import { Clapperboard, Film, LayoutGrid, LogOut, Palette, Plus } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useStudio } from "@/lib/store";
 
 const nav = [
   { to: "/dashboard", label: "Proyectos", icon: LayoutGrid },
+  { to: "/videos", label: "Mis videos", icon: Film },
   { to: "/projects/new", label: "Nuevo video", icon: Plus },
   { to: "/settings/brand-kit", label: "Brand Kit", icon: Palette },
 ] as const;

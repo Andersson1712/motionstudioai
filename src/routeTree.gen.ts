@@ -14,6 +14,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProjectsNewRouteImport } from './routes/projects.new'
 import { Route as SettingsBrandKitRouteImport } from './routes/settings.brand-kit'
+import { Route as ApiPublicRenderWorkerRouteImport } from './routes/api/public/render-worker'
 import { Route as ProjectsIdEditorRouteImport } from './routes/projects.$id.editor'
 
 const IndexRoute = IndexRouteImport.update({
@@ -41,6 +42,11 @@ const SettingsBrandKitRoute = SettingsBrandKitRouteImport.update({
   path: '/settings/brand-kit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicRenderWorkerRoute = ApiPublicRenderWorkerRouteImport.update({
+  id: '/api/public/render-worker',
+  path: '/api/public/render-worker',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsIdEditorRoute = ProjectsIdEditorRouteImport.update({
   id: '/projects/$id/editor',
   path: '/projects/$id/editor',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
+  '/api/public/render-worker': typeof ApiPublicRenderWorkerRoute
   '/projects/$id/editor': typeof ProjectsIdEditorRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
+  '/api/public/render-worker': typeof ApiPublicRenderWorkerRoute
   '/projects/$id/editor': typeof ProjectsIdEditorRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
+  '/api/public/render-worker': typeof ApiPublicRenderWorkerRoute
   '/projects/$id/editor': typeof ProjectsIdEditorRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/projects/new'
     | '/settings/brand-kit'
+    | '/api/public/render-worker'
     | '/projects/$id/editor'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/projects/new'
     | '/settings/brand-kit'
+    | '/api/public/render-worker'
     | '/projects/$id/editor'
   id:
     | '__root__'
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/projects/new'
     | '/settings/brand-kit'
+    | '/api/public/render-worker'
     | '/projects/$id/editor'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ProjectsNewRoute: typeof ProjectsNewRoute
   SettingsBrandKitRoute: typeof SettingsBrandKitRoute
+  ApiPublicRenderWorkerRoute: typeof ApiPublicRenderWorkerRoute
   ProjectsIdEditorRoute: typeof ProjectsIdEditorRoute
 }
 
@@ -145,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsBrandKitRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/render-worker': {
+      id: '/api/public/render-worker'
+      path: '/api/public/render-worker'
+      fullPath: '/api/public/render-worker'
+      preLoaderRoute: typeof ApiPublicRenderWorkerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/$id/editor': {
       id: '/projects/$id/editor'
       path: '/projects/$id/editor'
@@ -161,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ProjectsNewRoute: ProjectsNewRoute,
   SettingsBrandKitRoute: SettingsBrandKitRoute,
+  ApiPublicRenderWorkerRoute: ApiPublicRenderWorkerRoute,
   ProjectsIdEditorRoute: ProjectsIdEditorRoute,
 }
 export const routeTree = rootRouteImport
