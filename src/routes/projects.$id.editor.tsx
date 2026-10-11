@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Braces, Download, Layers, Loader2 } from "lucide-react";
 import { useCallback, useState } from "react";
-import { VerticalPlayer } from "@/components/VerticalPlayer";
+import { RemotionPlayer } from "@/components/RemotionPlayer";
 import { Btn, StatusBadge, inputCls } from "@/components/ui-kit";
 import { useStudio } from "@/lib/store";
 import type { Scene } from "@/lib/types";
@@ -89,7 +89,7 @@ function Editor() {
         </aside>
 
         <section className="flex flex-col items-center justify-center gap-6 p-6">
-          <VerticalPlayer timeline={t} captionStyle={brandKit.caption_style} safeZone={brandKit.safe_zone} logoUrl={brandKit.logo_url} onFrame={onFrame} seekTo={seek == null ? null : Math.floor(seek)} />
+          <RemotionPlayer timeline={t} captionStyle={brandKit.caption_style} safeZone={brandKit.safe_zone} logoUrl={brandKit.logo_url} exportUrl={project.export_url} onFrame={onFrame} seekTo={seek == null ? null : Math.floor(seek)} />
           <div className="flex w-full max-w-2xl gap-1">
             {t.scenes.map((s) => (
               <button
