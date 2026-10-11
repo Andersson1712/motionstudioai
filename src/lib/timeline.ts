@@ -4,6 +4,9 @@ const uid = () => Math.random().toString(36).slice(2, 10);
 
 const FPS = 30;
 
+/** Duración mínima de un video (1:30). */
+export const MIN_SECONDS = 90;
+
 export type Voiceover = { audioUrl: string; words: AlignedWord[] };
 
 /** Splits a script into sentences and builds a timeline matching the JSON contract.

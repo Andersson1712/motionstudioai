@@ -1,9 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Braces, Download, Layers, Loader2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Braces, Download, Layers, Loader2, Sparkles } from "lucide-react";
 import { useCallback, useState } from "react";
 import { RemotionPlayer } from "@/components/RemotionPlayer";
 import { Btn, StatusBadge, inputCls } from "@/components/ui-kit";
 import { useStudio } from "@/lib/store";
+import { hyperframeFor } from "@/lib/hyperframes-client";
+import { validateHyperframe } from "@/lib/hyperframes";
+import { queueRender } from "@/lib/renders";
+import { MIN_SECONDS, totalFrames } from "@/lib/timeline";
 import type { Scene } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +27,9 @@ export const Route = createFileRoute("/projects/$id/editor")({
 function Editor() {
   const { id } = Route.useParams();
   const project = useStudio((s) => s.projects.find((p) => p.id === id));
-  const { brandKit, updateTimeline, updateProject } = useStudio();
+  const { brandKit, updateTimeline, updateProject, userId } = useStudio();
+  const [regen, setRegen] = useState<string | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
   const [frame, setFrame] = useState(0);
   const [seek, setSeek] = useState<number | null>(null);
   const [showJson, setShowJson] = useState(false);
@@ -46,9 +52,27 @@ function Editor() {
       scenes: t.scenes.map((s) => (s.id === sid ? { ...s, layoutProps: { ...s.layoutProps, ...props } } : s)),
     });
 
-  const exportRender = () => {
-    updateProject(project.id, { status: "rendering" });
-    setTimeout(() => updateProject(project.id, { status: "completed" }), 4000);
+  const secs = totalFrames(t) / t.fps;
+  const exportRender = async () => {
+    if (!userId) return setMsg("Inicia sesión para exportar el MP4.");
+    try {
+      await queueRender(project.id, userId);
+      updateProject(project.id, { status: "rendering" });
+      setMsg("Render en cola. Sigue su estado en Mis videos.");
+    } catch {
+      setMsg("No se pudo poner el render en cola.");
+    }
+  };
+  const regenerate = async (s: Scene) => {
+    setRegen(s.id);
+    try {
+      const html = await hyperframeFor(s, t);
+      patchScene(s.id, { hyperframe: html });
+    } catch {
+      setMsg("No se pudo generar la animación de esa escena.");
+    } finally {
+      setRegen(null);
+    }
   };
 
   return (
@@ -76,6 +100,10 @@ function Editor() {
                   <span className="text-xs tabular-nums text-muted-foreground">{(s.fromFrame / t.fps).toFixed(1)}s · {(s.durationInFrames / t.fps).toFixed(1)}s</span>
                 </button>
                 <SceneFields scene={s} onChange={(p) => patchScene(s.id, p)} />
+                <button onClick={() => regenerate(s)} disabled={regen === s.id} className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-primary disabled:opacity-50">
+                  {regen === s.id ? <Loader2 className="size-3 animate-spin" /> : <Sparkles className="size-3" />}
+                  {validateHyperframe(s.layoutProps["hyperframe"]).ok ? "Regenerar animación" : "Generar animación HyperFrames"}
+                </button>
                 {s.overlays.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {s.overlays.map((o, oi) => (
@@ -89,6 +117,10 @@ function Editor() {
         </aside>
 
         <section className="flex flex-col items-center justify-center gap-6 p-6">
+          {secs < MIN_SECONDS && (
+            <div className="flex items-center gap-2 rounded-xl border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent"><AlertTriangle className="size-4" /> El video dura {Math.round(secs)} s, menos del mínimo de 1:30.</div>
+          )}
+          {msg && <div className="text-sm text-muted-foreground">{msg} <Link to="/videos" className="text-primary">Mis videos</Link></div>}
           <RemotionPlayer timeline={t} captionStyle={brandKit.caption_style} safeZone={brandKit.safe_zone} logoUrl={brandKit.logo_url} exportUrl={project.export_url} onFrame={onFrame} seekTo={seek == null ? null : Math.floor(seek)} />
           <div className="flex w-full max-w-2xl gap-1">
             {t.scenes.map((s) => (
