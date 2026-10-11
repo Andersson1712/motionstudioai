@@ -44,12 +44,13 @@ function LoginPage() {
         if (error) throw error;
         navigate({ to: "/dashboard" });
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
+        if (data.session) return navigate({ to: "/dashboard" });
         setMessage("Revisa tu correo para confirmar tu cuenta y luego inicia sesión.");
       }
     } catch (err: any) {

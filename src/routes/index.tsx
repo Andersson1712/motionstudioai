@@ -1,4 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { ArrowRight, Captions, Clapperboard, Palette, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -14,6 +16,12 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  // Al volver de Google (o con sesión abierta) se entra directo al estudio.
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!loading && user) navigate({ to: "/dashboard" });
+  }, [loading, user, navigate]);
   const feats = [
     { icon: Palette, t: "Brand Kit", d: "Colores, tipografía y estilo de subtítulos en un solo lugar." },
     { icon: Sparkles, t: "Guion con IA", d: "De una idea a un timeline estructurado en segundos." },
