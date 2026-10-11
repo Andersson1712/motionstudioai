@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AlertTriangle, ArrowLeft, Braces, Download, Layers, Loader2, Sparkles } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Music, Volume2, Braces, Download, Layers, Loader2, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { RemotionPlayer } from "@/components/RemotionPlayer";
@@ -8,6 +8,7 @@ import { useStudio } from "@/lib/store";
 import { hyperframeFor } from "@/lib/hyperframes-client";
 import { validateHyperframe } from "@/lib/hyperframes";
 import { queueRender } from "@/lib/renders";
+import { generateMusic, withSfx } from "@/lib/audio-client";
 import { MIN_SECONDS, totalFrames } from "@/lib/timeline";
 import type { Scene } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -34,6 +35,7 @@ function Editor() {
   useEffect(() => {
     if (!loading) void loadForUser(user?.id ?? null);
   }, [loading, user?.id, loadForUser]);
+  const [audioBusy, setAudioBusy] = useState<"music" | "sfx" | null>(null);
   const [regen, setRegen] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [frame, setFrame] = useState(0);
@@ -59,6 +61,30 @@ function Editor() {
     });
 
   const secs = totalFrames(t) / t.fps;
+  const makeMusic = async () => {
+    setAudioBusy("music");
+    setMsg("Creando música con Suno… puede tardar 1–3 minutos.");
+    try {
+      const url = await generateMusic(`instrumental background music for a vertical video about: ${project.title}. modern, energetic, no vocals`);
+      updateTimeline(project.id, { ...t, audioTrack: { ...t.audioTrack, bgmUrl: url, bgmVolume: 0.15 } });
+      setMsg("Música de fondo añadida.");
+    } catch (e) {
+      setMsg(`No se pudo crear la música: ${e instanceof Error ? e.message : "error"}`);
+    } finally {
+      setAudioBusy(null);
+    }
+  };
+  const makeSfx = async () => {
+    setAudioBusy("sfx");
+    try {
+      updateTimeline(project.id, await withSfx(t));
+      setMsg("Efectos de sonido añadidos a las transiciones.");
+    } catch {
+      setMsg("No se pudieron crear los efectos de sonido.");
+    } finally {
+      setAudioBusy(null);
+    }
+  };
   const exportRender = async () => {
     if (!userId) return setMsg("Inicia sesión para exportar el MP4.");
     try {
@@ -123,6 +149,15 @@ function Editor() {
         </aside>
 
         <section className="flex flex-col items-center justify-center gap-6 p-6">
+          <div className="flex flex-wrap justify-center gap-2">
+            <Btn variant="outline" onClick={makeMusic} disabled={audioBusy !== null}>
+              {audioBusy === "music" ? <Loader2 className="size-4 animate-spin" /> : <Music className="size-4" />}
+              {t.audioTrack.bgmUrl ? "Nueva música (Suno)" : "Música de fondo (Suno)"}
+            </Btn>
+            <Btn variant="outline" onClick={makeSfx} disabled={audioBusy !== null}>
+              {audioBusy === "sfx" ? <Loader2 className="size-4 animate-spin" /> : <Volume2 className="size-4" />} Efectos de sonido
+            </Btn>
+          </div>
           {secs < MIN_SECONDS && (
             <div className="flex items-center gap-2 rounded-xl border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent"><AlertTriangle className="size-4" /> El video dura {Math.round(secs)} s, menos del mínimo de 1:30.</div>
           )}

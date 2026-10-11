@@ -16,6 +16,7 @@ import { Route as VideosRouteImport } from './routes/videos'
 import { Route as ProjectsNewRouteImport } from './routes/projects.new'
 import { Route as SettingsBrandKitRouteImport } from './routes/settings.brand-kit'
 import { Route as ApiPublicRenderWorkerRouteImport } from './routes/api/public/render-worker'
+import { Route as ApiPublicSunoCallbackRouteImport } from './routes/api/public/suno-callback'
 import { Route as ProjectsIdEditorRouteImport } from './routes/projects.$id.editor'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +54,11 @@ const ApiPublicRenderWorkerRoute = ApiPublicRenderWorkerRouteImport.update({
   path: '/api/public/render-worker',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicSunoCallbackRoute = ApiPublicSunoCallbackRouteImport.update({
+  id: '/api/public/suno-callback',
+  path: '/api/public/suno-callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsIdEditorRoute = ProjectsIdEditorRouteImport.update({
   id: '/projects/$id/editor',
   path: '/projects/$id/editor',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
   '/api/public/render-worker': typeof ApiPublicRenderWorkerRoute
+  '/api/public/suno-callback': typeof ApiPublicSunoCallbackRoute
   '/projects/$id/editor': typeof ProjectsIdEditorRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
   '/api/public/render-worker': typeof ApiPublicRenderWorkerRoute
+  '/api/public/suno-callback': typeof ApiPublicSunoCallbackRoute
   '/projects/$id/editor': typeof ProjectsIdEditorRoute
 }
 export interface FileRoutesById {
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
   '/api/public/render-worker': typeof ApiPublicRenderWorkerRoute
+  '/api/public/suno-callback': typeof ApiPublicSunoCallbackRoute
   '/projects/$id/editor': typeof ProjectsIdEditorRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/projects/new'
     | '/settings/brand-kit'
     | '/api/public/render-worker'
+    | '/api/public/suno-callback'
     | '/projects/$id/editor'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/projects/new'
     | '/settings/brand-kit'
     | '/api/public/render-worker'
+    | '/api/public/suno-callback'
     | '/projects/$id/editor'
   id:
     | '__root__'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/projects/new'
     | '/settings/brand-kit'
     | '/api/public/render-worker'
+    | '/api/public/suno-callback'
     | '/projects/$id/editor'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   ProjectsNewRoute: typeof ProjectsNewRoute
   SettingsBrandKitRoute: typeof SettingsBrandKitRoute
   ApiPublicRenderWorkerRoute: typeof ApiPublicRenderWorkerRoute
+  ApiPublicSunoCallbackRoute: typeof ApiPublicSunoCallbackRoute
   ProjectsIdEditorRoute: typeof ProjectsIdEditorRoute
 }
 
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicRenderWorkerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/suno-callback': {
+      id: '/api/public/suno-callback'
+      path: '/api/public/suno-callback'
+      fullPath: '/api/public/suno-callback'
+      preLoaderRoute: typeof ApiPublicSunoCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/$id/editor': {
       id: '/projects/$id/editor'
       path: '/projects/$id/editor'
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsNewRoute: ProjectsNewRoute,
   SettingsBrandKitRoute: SettingsBrandKitRoute,
   ApiPublicRenderWorkerRoute: ApiPublicRenderWorkerRoute,
+  ApiPublicSunoCallbackRoute: ApiPublicSunoCallbackRoute,
   ProjectsIdEditorRoute: ProjectsIdEditorRoute,
 }
 export const routeTree = rootRouteImport
