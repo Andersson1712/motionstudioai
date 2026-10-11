@@ -26,10 +26,10 @@ export const generateScript = createServerFn({ method: "POST" })
         },
       ],
       [
-        "Eres un guionista experto en videos verticales cortos (TikTok, Reels, Shorts) de 20 a 40 segundos.",
+        "Eres un guionista experto en videos verticales cortos (TikTok, Reels, Shorts) de 90 a 120 segundos (mínimo 1 minuto 30 segundos de locución).",
         "Escribe guiones en español, con un gancho potente en la primera frase, ritmo ágil y un cierre con llamada a la acción.",
         "Frases cortas y directas, pensadas para locución. Sin indicaciones técnicas, sin acotaciones de cámara, sin encabezados: solo el texto que se va a narrar.",
-        "Extensión: entre 60 y 110 palabras.",
+        "Extensión obligatoria: entre 250 y 320 palabras (al menos 1 minuto 30 segundos narrado). Desarrolla 5 o 6 bloques: gancho, problema, datos, pasos concretos, ejemplo y cierre.",
       ].join(" "),
     );
 
