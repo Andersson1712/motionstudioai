@@ -33,17 +33,24 @@ export function HyperFrameScene({ html, fontFamily }: { html: string; fontFamily
     if (!loaded) return;
     const rendering = getRemotionEnvironment().isRendering;
     const h = rendering ? delayRender(`hyperframe-seek-${frame}`) : null;
+    let done = false;
+    const finish = () => {
+      if (h != null && !done) {
+        done = true;
+        continueRender(h);
+      }
+    };
     const onAck = (e: MessageEvent) => {
       if (e.source === ref.current?.contentWindow && e.data?.hf === "ready" && e.data.id === frame && h != null) {
         window.removeEventListener("message", onAck);
-        continueRender(h);
+        finish();
       }
     };
     if (h != null) window.addEventListener("message", onAck);
     ref.current?.contentWindow?.postMessage({ hf: "seek", t: frame / fps, id: frame }, "*");
     return () => {
       window.removeEventListener("message", onAck);
-      if (h != null) continueRender(h);
+      finish();
     };
   }, [frame, fps, loaded]);
 
