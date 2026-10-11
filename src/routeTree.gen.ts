@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as VideosRouteImport } from './routes/videos'
 import { Route as ProjectsNewRouteImport } from './routes/projects.new'
 import { Route as SettingsBrandKitRouteImport } from './routes/settings.brand-kit'
 import { Route as ApiPublicRenderWorkerRouteImport } from './routes/api/public/render-worker'
@@ -30,6 +31,11 @@ const DashboardRoute = DashboardRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VideosRoute = VideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProjectsNewRoute = ProjectsNewRouteImport.update({
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/videos': typeof VideosRoute
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
   '/api/public/render-worker': typeof ApiPublicRenderWorkerRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/videos': typeof VideosRoute
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
   '/api/public/render-worker': typeof ApiPublicRenderWorkerRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/videos': typeof VideosRoute
   '/projects/new': typeof ProjectsNewRoute
   '/settings/brand-kit': typeof SettingsBrandKitRoute
   '/api/public/render-worker': typeof ApiPublicRenderWorkerRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/login'
+    | '/videos'
     | '/projects/new'
     | '/settings/brand-kit'
     | '/api/public/render-worker'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/login'
+    | '/videos'
     | '/projects/new'
     | '/settings/brand-kit'
     | '/api/public/render-worker'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/login'
+    | '/videos'
     | '/projects/new'
     | '/settings/brand-kit'
     | '/api/public/render-worker'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  VideosRoute: typeof VideosRoute
   ProjectsNewRoute: typeof ProjectsNewRoute
   SettingsBrandKitRoute: typeof SettingsBrandKitRoute
   ApiPublicRenderWorkerRoute: typeof ApiPublicRenderWorkerRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/videos': {
+      id: '/videos'
+      path: '/videos'
+      fullPath: '/videos'
+      preLoaderRoute: typeof VideosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects/new': {
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  VideosRoute: VideosRoute,
   ProjectsNewRoute: ProjectsNewRoute,
   SettingsBrandKitRoute: SettingsBrandKitRoute,
   ApiPublicRenderWorkerRoute: ApiPublicRenderWorkerRoute,
