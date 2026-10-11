@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AlertTriangle, ArrowLeft, Braces, Download, Layers, Loader2, Sparkles } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { RemotionPlayer } from "@/components/RemotionPlayer";
 import { Btn, StatusBadge, inputCls } from "@/components/ui-kit";
 import { useStudio } from "@/lib/store";
@@ -28,6 +29,11 @@ function Editor() {
   const { id } = Route.useParams();
   const project = useStudio((s) => s.projects.find((p) => p.id === id));
   const { brandKit, updateTimeline, updateProject, userId } = useStudio();
+  const { user, loading } = useAuth();
+  const loadForUser = useStudio((s) => s.loadForUser);
+  useEffect(() => {
+    if (!loading) void loadForUser(user?.id ?? null);
+  }, [loading, user?.id, loadForUser]);
   const [regen, setRegen] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [frame, setFrame] = useState(0);

@@ -81,6 +81,13 @@ async function fetchCloud(userId: string): Promise<{ kit: BrandKit; projects: Vi
   return { kit, projects: (rows as unknown as VideoProject[] | null) ?? [] };
 }
 
+/** Las consultas del cliente son perezosas: hay que esperarlas para que se envíen. */
+function sync(q: PromiseLike<{ error: { message: string } | null }>) {
+  void q.then(({ error }) => {
+    if (error) console.error("Sync nube:", error.message);
+  });
+}
+
 export const useStudio = create<State>()(
   persist(
     (set, get) => ({
@@ -108,7 +115,7 @@ export const useStudio = create<State>()(
         set({ brandKit: kit });
         const { userId } = get();
         if (userId && kit.id !== defaultKit.id) {
-          void supabase.from("brand_kits").update(p).eq("id", kit.id).eq("user_id", userId);
+          sync(supabase.from("brand_kits").update(p).eq("id", kit.id).eq("user_id", userId));
         }
       },
 
@@ -116,12 +123,12 @@ export const useStudio = create<State>()(
         set((s) => ({ projects: [p, ...s.projects] }));
         const { userId, brandKit } = get();
         if (userId) {
-          void supabase.from("projects").insert({
+          sync(supabase.from("projects").insert({
             ...p,
             timeline_data: asJson(p.timeline_data),
             user_id: userId,
             brand_kit_id: brandKit.id !== defaultKit.id ? brandKit.id : null,
-          });
+          }));
         }
       },
 
@@ -130,11 +137,11 @@ export const useStudio = create<State>()(
         const { userId } = get();
         if (userId) {
           const { timeline_data, ...rest } = p;
-          void supabase
+          sync(supabase
             .from("projects")
             .update({ ...rest, ...(timeline_data !== undefined ? { timeline_data: asJson(timeline_data) } : {}) })
             .eq("id", id)
-            .eq("user_id", userId);
+            .eq("user_id", userId));
         }
       },
 
@@ -142,13 +149,13 @@ export const useStudio = create<State>()(
         set((s) => ({ projects: s.projects.map((x) => (x.id === id ? { ...x, timeline_data: t } : x)) }));
         const { userId } = get();
         if (userId)
-          void supabase.from("projects").update({ timeline_data: asJson(t) }).eq("id", id).eq("user_id", userId);
+          sync(supabase.from("projects").update({ timeline_data: asJson(t) }).eq("id", id).eq("user_id", userId));
       },
 
       deleteProject: (id) => {
         set((s) => ({ projects: s.projects.filter((x) => x.id !== id) }));
         const { userId } = get();
-        if (userId) void supabase.from("projects").delete().eq("id", id).eq("user_id", userId);
+        if (userId) sync(supabase.from("projects").delete().eq("id", id).eq("user_id", userId));
       },
     }),
     {
