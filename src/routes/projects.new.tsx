@@ -79,6 +79,17 @@ function NewProject() {
         setDraftError("No se pudo generar la voz del locutor. Se creará el video sin audio.");
       }
     }
+    // Paso 3+4: Scene Director con IA + validación contra el registro; si falla, plan automático.
+    let timeline = buildTimeline(finalScript, brandKit, density, sfx, voiceover);
+    if (userId) {
+      try {
+        const words = wordsFor(finalScript, density, voiceover?.words);
+        const plan = await planScenes({ data: { words: words.map((w) => w.word), density, mode } });
+        timeline = timelineFromPlan(plan, words, brandKit, sfx, voiceover?.audioUrl ?? "");
+      } catch (e) {
+        console.error("Scene Director", e);
+      }
+    }
     const id = crypto.randomUUID();
     addProject({
       id,
@@ -92,7 +103,7 @@ function NewProject() {
       voice_id: voice,
       visual_density: density,
       sfx_enabled: sfx,
-      timeline_data: buildTimeline(finalScript, brandKit, density, sfx, voiceover),
+      timeline_data: timeline,
       export_url: null,
       created_at: new Date().toISOString(),
     });
