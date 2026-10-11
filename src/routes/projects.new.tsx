@@ -7,6 +7,8 @@ import { useStudio } from "@/lib/store";
 import { generateScript } from "@/lib/scripts.functions";
 import { buildTimeline, draftScriptFromIdea, type Voiceover } from "@/lib/timeline";
 import { generateVoiceover } from "@/lib/voice.functions";
+import { planScenes } from "@/lib/director.functions";
+import { timelineFromPlan, wordsFor } from "@/lib/registry";
 import type { ProjectMode, VisualDensity } from "@/lib/types";
 import { cn } from "@/lib/utils";
 

@@ -114,7 +114,7 @@ function OverlayView({ component, props, theme, duration }: { component: string;
   const frame = useCurrentFrame();
   const e = useEnter();
   if (component === "EmojiBurst")
-    return <div style={{ position: "absolute", right: 90, top: 260, fontSize: 200, transform: `scale(${e}) rotate(${(1 - e) * 90}deg)`, opacity: interpolate(frame, [duration - 6, duration], [1, 0], { extrapolateLeft: "clamp" }) }}>{props.emoji}</div>;
+    return <div style={{ position: "absolute", right: 90, top: 260, fontSize: 200, transform: `scale(${e}) rotate(${(1 - e) * 90}deg)`, opacity: interpolate(frame, [duration - 6, duration], [1, 0], { extrapolateLeft: "clamp" }) }}>{props["emoji"]}</div>;
   return (
     <div style={{ position: "absolute", left: 80, right: 80, top: 90, height: 16, borderRadius: 8, background: "#ffffff22", overflow: "hidden" }}>
       <div style={{ height: "100%", width: `${(frame / duration) * 100}%`, background: theme.accentColor }} />
