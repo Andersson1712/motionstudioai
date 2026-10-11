@@ -1,4 +1,6 @@
 import { AbsoluteFill, Audio, Sequence, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { validateHyperframe } from "@/lib/hyperframes";
+import { HyperFrameScene } from "./HyperFrameScene";
 import type { CaptionStyle, SafeZone, Scene, TimelineData } from "@/lib/types";
 
 /** Composición Remotion: lee exactamente el contrato del timeline. La misma se usa para el render MP4. */
@@ -152,7 +154,7 @@ export function MotionVideo({ timeline, captionStyle, safeZone, logoUrl }: Motio
       <Background theme={theme} />
       {timeline.scenes.map((s) => (
         <Sequence key={s.id} from={s.fromFrame} durationInFrames={s.durationInFrames}>
-          <SceneLayout scene={s} theme={theme} />
+          {validateHyperframe(s.layoutProps["hyperframe"]).ok ? <HyperFrameScene html={s.layoutProps["hyperframe"]} fontFamily={theme.fontFamily} /> : <SceneLayout scene={s} theme={theme} />}
           {s.overlays.map((o, i) => (
             <Sequence key={i} from={o.fromFrame - s.fromFrame} durationInFrames={o.durationInFrames}>
               <OverlayView component={o.component} props={o.props} theme={theme} duration={o.durationInFrames} />
