@@ -158,6 +158,7 @@ export function MotionVideo({ timeline, captionStyle, safeZone, logoUrl }: Motio
           {s.overlays.map((o, i) => (
             <Sequence key={i} from={o.fromFrame - s.fromFrame} durationInFrames={o.durationInFrames}>
               <OverlayView component={o.component} props={o.props} theme={theme} duration={o.durationInFrames} />
+              {o.props["sfxUrl"] && <Audio src={String(o.props["sfxUrl"])} volume={0.55} />}
             </Sequence>
           ))}
         </Sequence>

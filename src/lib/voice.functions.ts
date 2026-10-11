@@ -42,18 +42,18 @@ export const generateVoiceover = createServerFn({ method: "POST" })
     if (!key) throw new Error("ElevenLabs no está conectado");
     const voice = VOICE_MAP[data.voiceId] ?? VOICE_MAP['elevenlabs_default']!;
 
-    const res = await fetch(
-      `https://api.elevenlabs.io/v1/text-to-speech/${voice}/with-timestamps?output_format=mp3_44100_128`,
-      {
+    // eleven_v3 (más natural, español forzado); si falla, respaldo con multilingual_v2 y ajustes estables.
+    const tts = (model: string, settings: Record<string, unknown>) =>
+      fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voice}/with-timestamps?output_format=mp3_44100_128`, {
         method: "POST",
         headers: { "xi-api-key": key, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: data.script,
-          model_id: "eleven_multilingual_v2",
-          voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.4, use_speaker_boost: true },
-        }),
-      },
-    );
+        body: JSON.stringify({ text: data.script, model_id: model, language_code: "es", apply_text_normalization: "on", voice_settings: settings }),
+      });
+    let res = await tts("eleven_v3", { stability: 0.5, similarity_boost: 0.8, use_speaker_boost: true });
+    if (!res.ok) {
+      console.error(`ElevenLabs v3 [${res.status}]: ${await res.text()}`);
+      res = await tts("eleven_multilingual_v2", { stability: 0.55, similarity_boost: 0.8, style: 0, use_speaker_boost: true });
+    }
     if (!res.ok) {
       const body = await res.text();
       console.error(`ElevenLabs [${res.status}]: ${body}`);

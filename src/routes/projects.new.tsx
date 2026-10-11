@@ -9,6 +9,7 @@ import { buildTimeline, draftScriptFromIdea, type Voiceover } from "@/lib/timeli
 import { generateVoiceover } from "@/lib/voice.functions";
 import { planScenes } from "@/lib/director.functions";
 import { addHyperframes } from "@/lib/hyperframes-client";
+import { withSfx } from "@/lib/audio-client";
 import { timelineFromPlan, wordsFor } from "@/lib/registry";
 import type { ProjectMode, VisualDensity } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -93,6 +94,7 @@ function NewProject() {
         console.error("Scene Director", e);
       }
       timeline = await addHyperframes(timeline);
+      if (sfx) timeline = await withSfx(timeline).catch(() => timeline);
     }
     const id = crypto.randomUUID();
     addProject({
