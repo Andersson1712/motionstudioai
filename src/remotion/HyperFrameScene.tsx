@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AbsoluteFill, continueRender, delayRender, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, continueRender, delayRender, getRemotionEnvironment, useCurrentFrame, useVideoConfig } from "remotion";
 import { hyperframeDoc } from "@/lib/hyperframes";
 
 /** Muestra una composición HyperFrames en un iframe aislado y la sincroniza con el frame de Remotion. */
@@ -28,8 +28,23 @@ export function HyperFrameScene({ html, fontFamily }: { html: string; fontFamily
     if (loaded) continueRender(handle);
   }, [loaded, handle]);
 
+  // En el render MP4 cada frame espera a que el iframe confirme el seek (captura determinista).
   useEffect(() => {
-    if (loaded) ref.current?.contentWindow?.postMessage({ hf: "seek", t: frame / fps, id: frame }, "*");
+    if (!loaded) return;
+    const rendering = getRemotionEnvironment().isRendering;
+    const h = rendering ? delayRender(`hyperframe-seek-${frame}`) : null;
+    const onAck = (e: MessageEvent) => {
+      if (e.source === ref.current?.contentWindow && e.data?.hf === "ready" && e.data.id === frame && h != null) {
+        window.removeEventListener("message", onAck);
+        continueRender(h);
+      }
+    };
+    if (h != null) window.addEventListener("message", onAck);
+    ref.current?.contentWindow?.postMessage({ hf: "seek", t: frame / fps, id: frame }, "*");
+    return () => {
+      window.removeEventListener("message", onAck);
+      if (h != null) continueRender(h);
+    };
   }, [frame, fps, loaded]);
 
   return (

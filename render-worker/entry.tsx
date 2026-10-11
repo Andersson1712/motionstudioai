@@ -6,7 +6,7 @@ function Root() {
   return (
     <Composition
       id="MotionVideo"
-      component={MotionVideo as React.FC<MotionVideoProps>}
+      component={MotionVideo}
       durationInFrames={30}
       fps={30}
       width={1080}
