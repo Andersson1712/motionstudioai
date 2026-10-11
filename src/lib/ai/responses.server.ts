@@ -1,5 +1,5 @@
 import { createOpenAI } from "@ai-sdk/openai";
-import { streamText, type ModelMessage } from "ai";
+import { jsonSchema, Output, streamText, type ModelMessage } from "ai";
 
 import { createLovableAiGatewayRunIdFetch, getLovableAiGatewayRunId } from "./run-id.ts";
 
@@ -39,4 +39,39 @@ export async function generateTextWithLovableAi(
   });
 
   return result.text;
+}
+
+/** Respuesta estructurada (json_schema estricto) vía Responses, en streaming. */
+export async function generateObjectWithLovableAi<T>(
+  request: Request,
+  messages: ModelMessage[],
+  instructions: string,
+  schema: Record<string, unknown>,
+): Promise<T> {
+  const apiKey = process.env["LOVABLE_API_KEY"];
+  if (!apiKey) throw new Error("AI no configurada");
+  const runIdFetch = createLovableAiGatewayRunIdFetch(getLovableAiGatewayRunId(request));
+  const provider = createOpenAI({
+    baseURL: GATEWAY_BASE_URL,
+    apiKey,
+    headers: { "Lovable-API-Key": apiKey, "X-Lovable-AIG-SDK": "vercel-ai-sdk" },
+    fetch: runIdFetch.fetch,
+  });
+  const result = streamText({
+    model: provider.responses(MODEL),
+    instructions,
+    messages,
+    abortSignal: request.signal,
+    output: Output.object({ schema: jsonSchema<T>(schema as never) }),
+    providerOptions: {
+      openai: {
+        store: false,
+        forceReasoning: true,
+        reasoningEffort: "low",
+        reasoningSummary: "auto",
+        include: ["reasoning.encrypted_content"],
+      },
+    },
+  });
+  return (await result.output) as T;
 }
