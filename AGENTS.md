@@ -18,3 +18,4 @@
 - MP4 renders are queued in `render_jobs`; the external Remotion worker pulls/updates jobs via /api/public/render-worker (Bearer RENDER_WORKER_SECRET) and uploads to the private `renders` bucket via a signed upload URL — the app server never renders.
 - Supabase query builders are lazy: client write-through in the store must go through `sync()` (awaits the query) or nothing is sent.
 - Render worker lives in render-worker/ (Railway, Dockerfile built from repo root via railway.json) and copies src/remotion + src/lib/{hyperframes,types}.ts at build time, so the MP4 uses the exact editor composition; HyperFrameScene delays each rendered frame until the iframe acks the seek.
+- Audio: background music via sunoapi.org (start + poll, file copied into the user's storage folder), SFX via ElevenLabs Sound Effects cached per user and attached as overlay.props.sfxUrl; scripts are grounded with a Firecrawl web search (last month) before the LLM call.
